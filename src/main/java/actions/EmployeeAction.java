@@ -79,7 +79,7 @@ public class EmployeeAction extends ActionBase {
         if (checkToken()) {
 
             //パラメータの値を元に従業員情報のインスタンスを作成する
-            EmployeeView ev = new EmployeeView(
+            EmployeeView enployeeView = new EmployeeView(
                     null,
                     getRequestParam(AttributeConst.EMP_CODE),
                     getRequestParam(AttributeConst.EMP_NAME),
@@ -93,13 +93,13 @@ public class EmployeeAction extends ActionBase {
             String pepper = getContextScope(PropertyConst.PEPPER);
 
             //従業員情報登録
-            List<String> errors = employeeService.create(ev, pepper);
+            List<String> errors = employeeService.create(enployeeView, pepper);
 
             if (errors.size() > 0) {
                 //登録中にエラーがあった場合
 
                 putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策用トークン
-                putRequestScope(AttributeConst.EMPLOYEE, ev); //入力された従業員情報
+                putRequestScope(AttributeConst.EMPLOYEE, enployeeView); //入力された従業員情報
                 putRequestScope(AttributeConst.ERR, errors); //エラーのリスト
 
                 //新規登録画面を再表示
@@ -118,4 +118,21 @@ public class EmployeeAction extends ActionBase {
         }
     }
 
+    public void show() throws ServletException, IOException {
+
+        //idを条件に従業員データを取得する
+        EmployeeView enployeeView = employeeService.findOne(toNumber(getRequestParam(AttributeConst.EMP_ID)));
+
+        if (enployeeView == null || enployeeView.getDeleteFlag() == AttributeConst.DEL_FLAG_TRUE.getIntegerValue()) {
+
+            //データが取得できなかった、または論理削除されている場合はエラー画面を表示
+            forward(ForwardConst.FW_ERR_UNKNOWN);
+            return;
+        }
+
+        putRequestScope(AttributeConst.EMPLOYEE, enployeeView); //取得した従業員情報
+
+        //詳細画面を表示
+        forward(ForwardConst.FW_EMP_SHOW);
+    }
 }
