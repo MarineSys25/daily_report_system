@@ -1,7 +1,5 @@
 @charset "UTF-8";
 
-@CHARSET "UTF-8";
-
 body {
     color: #333333;
     font-family: "Hiragino Kaku Gothic Pro",Meiryo,"MS PGothic",Helvetica,Arial,sans-serif;
@@ -9,7 +7,6 @@ body {
 
 #header {
     width: 100%;
-    height: 70px;
     background-color: #333333;
 }
 
@@ -115,7 +112,7 @@ select {
 }
 
 #header a {
-    color: #eeeeee;
+    color: white;
 }
 
 h1 a {
